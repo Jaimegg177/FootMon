@@ -26,7 +26,7 @@ def bd():
     shootouts.insert_many(data_shootouts_json)
 
 
-    '''
+    
     # Función de map
     map_function = """
     function() {
@@ -51,8 +51,8 @@ def bd():
     print("Resultados de partidos por equipo por año en torneo: ")
     for doc in sorted_result:
         print(doc)
+    
     '''
-
     # Función de map
     map_function = """
     function() {
@@ -76,7 +76,7 @@ def bd():
     print("Goles en propia meta por equipo: ")
     for doc in sorted_result:
         print(doc)
-
+    '''
 def start():
     top=Tk()
     B = Button(top, text ="Almacenar Resultados")
