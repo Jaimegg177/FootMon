@@ -86,6 +86,31 @@ def goles_en_propia_reibidos_por_equipo():
     for doc in sorted_result:
         print(doc)
 
+def goles_por_equipo_en_torneo():
+     # Función de map
+    map_function = """
+    function() {
+        emit({tournament: this.tournament, team: this.home_team}, this.home_score);
+        emit({tournament: this.tournament, team: this.away_team}, this.away_score);
+    }
+    """
+
+    # Función de reduce
+    reduce_function = """
+    function(key, values) {
+        return Array.sum(values);
+    }
+    """
+
+    # Ejecutar MapReduce
+    resultado = db.command('mapReduce', 'results', map=map_function, reduce=reduce_function, out='goles_por_equipo_torneo')
+
+    sorted_result = list(db.goles_por_equipo_torneo.find().sort([('value', -1)]))
+
+    print("\nGoles por equipo y torneo:")
+    for doc in sorted_result:
+        print(doc)
+
 def start():
     top=Tk()
     B = Button(top, text ="Popular BD", command=populate_db)
@@ -99,6 +124,9 @@ def start():
 
     B4 = Button(top, text ="Goles en propia recibidos por cada equipo", command=goles_en_propia_reibidos_por_equipo)
     B4.pack()
+
+    B5 = Button(top, text ="Goles por equipo y torneo", command=goles_por_equipo_en_torneo)
+    B5.pack()
        
     top.mainloop()
 
