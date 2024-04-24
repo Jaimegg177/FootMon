@@ -111,6 +111,28 @@ def goles_por_equipo_en_torneo():
     for doc in sorted_result:
         print(doc)
 
+def primer_tiro_penaltis():
+    map_function = """
+    function() {
+        emit({team: this.first_shooter}, 1);
+    }
+    """
+
+    # Función de reduce para calcular número de veces que cada equipo ha chutado primero en tanda de penaltis
+    reduce_function = """
+    function(key, values) {
+        return Array.sum(values);
+    }
+    """
+
+    # Ejecutar MapReduce para calcular número de veces que cada equipo ha chutado primero en tanda de penaltis
+    resultado = db.command('mapReduce', 'shootouts', map=map_function, reduce=reduce_function, out='chutes_primero_en_penaltis')
+    sorted_result = list(db.chutes_primero_en_penaltis.find().sort([('value', -1)]))
+
+    print("\nChutes primero en tanda de penaltis:")
+    for doc in sorted_result:
+        print(doc)
+
 def start():
     top=Tk()
     B = Button(top, text ="Popular BD", command=populate_db)
@@ -127,6 +149,9 @@ def start():
 
     B5 = Button(top, text ="Goles por equipo y torneo", command=goles_por_equipo_en_torneo)
     B5.pack()
+
+    B6 = Button(top, text ="Primer tiro en penaltis", command=primer_tiro_penaltis)
+    B6.pack()
        
     top.mainloop()
 
