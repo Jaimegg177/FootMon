@@ -8,9 +8,9 @@ db = client['deportes_db']
 
 def populate_db():
     
-    results = db['results']
-    goalscorers = db['goalscorers']
-    shootouts = db['shootouts']
+    results = db['partidos_partido']
+    goalscorers = db['partidos_goleadores']
+    shootouts = db['partidos_penaltis']
 
     # Insertar resultados
     data_results = pd.read_csv('data/results.csv')
