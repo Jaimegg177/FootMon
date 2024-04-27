@@ -1,7 +1,8 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import shootouts_csv, results_csv, goalscorers_csv, consultas, datos, partidos_equipo_anyo_torneo, goles_por_jugador_y_anyo, goles_en_propia_reibidos_por_equipo, goles_por_equipo_en_torneo, maximo_goleador_equipo, primer_tiro_penaltis, media_goles_de_penalti_por_jugador, media_victorias_equipo, pagina_principal
+from .views import shootouts_csv, results_csv, goalscorers_csv, consultas, datos, partidos_equipo_anyo_torneo, goles_por_jugador_y_anyo, goles_en_propia_reibidos_por_equipo, goles_por_equipo_en_torneo, maximo_goleador_equipo, maximo_goleador_equipo_aggregate, primer_tiro_penaltis, media_goles_de_penalti_por_jugador, media_victorias_equipo, pagina_principal, ciudades_con_mas_goles, ciudades_con_mas_goles_bucles
+
 
 urlpatterns = [
     path('', pagina_principal, name='pagina_principal'),
@@ -18,6 +19,9 @@ urlpatterns = [
     path('results_csv/', results_csv, name='results_csv'),
     path('shootouts_csv/', shootouts_csv, name='shootouts_csv'),
     path('goalscorers_csv/', goalscorers_csv, name='goalscorers_csv'),
+    path('maximo_goleador_equipo_aggregate/', maximo_goleador_equipo_aggregate, name='maximo_goleador_equipo_aggregate'),
+    path('ciudades_con_mas_goles/', ciudades_con_mas_goles, name='ciudades_con_mas_goles'),
+    path('ciudades_con_mas_goles_bucles/', ciudades_con_mas_goles_bucles, name='ciudades_con_mas_goles_bucles'),
 
 ]
 
