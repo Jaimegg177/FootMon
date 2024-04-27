@@ -1,3 +1,5 @@
+import csv
+import os
 from django.shortcuts import render
 from pymongo import MongoClient
 
@@ -238,7 +240,56 @@ def media_victorias_equipo(request):
     return render(request, 'media_victorias_equipo.html', {'sorted_result': sorted_result})
 
 
-# MAIN
-
+# NavBar
 def pagina_principal(request):
     return render(request, 'main.html', {})
+
+def datos(request):
+    return render(request, 'datos.html', {})
+
+def consultas(request):
+    return render(request, 'consultas.html', {})
+
+# CSVs
+def results_csv(request):
+     # Ruta del archivo CSV
+    csv_path = os.path.join('data','results.csv')
+
+    # Leer el archivo CSV y procesar los datos
+    csv_data = []
+    with open(csv_path, 'r', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            csv_data.append(row)
+
+    # Renderizar una plantilla HTML para mostrar los datos
+    return render(request, 'resultsCSV.html', {'csv_data': csv_data})
+
+def goalscorers_csv(request):
+    # Ruta del archivo CSV
+    csv_path = os.path.join('data', 'goalscorers.csv')
+
+    # Leer el archivo CSV y procesar los datos
+    csv_data = []
+    with open(csv_path, 'r', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            csv_data.append(row)
+
+    # Renderizar una plantilla HTML para mostrar los datos
+    return render(request, 'goalscorersCSV.html', {'csv_data': csv_data})
+
+def shootouts_csv(request):
+     # Ruta del archivo CSV
+    csv_path = os.path.join('data','shootouts.csv')
+
+    # Leer el archivo CSV y procesar los datos
+    csv_data = []
+    with open(csv_path, 'r', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            csv_data.append(row)
+
+    # Renderizar una plantilla HTML para mostrar los datos
+    return render(request, 'shootoutsCSV.html', {'csv_data': csv_data})
+

@@ -1,0 +1,107 @@
+<!-- csv_data.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
+        /* Estilos para la fila de encabezados */
+        tr:first-child {
+            font-weight: bold; /* Texto en negrita */
+        }
+        tr:first-child td {
+            background-color: #79f3ba; /* Color de fondo verde */
+        }
+        /* Estilos para las filas impares */
+        tr:nth-child(odd) {
+            background-color: #f2f2f2; /* Color de fondo para las filas impares */
+        }
+        /* Estilos para las filas pares */
+        tr:nth-child(even) {
+            background-color: #ffffff; /* Color de fondo para las filas pares */
+        }
+        /* Estilos para las columnas */
+        td {
+            padding: 8px; /* Espaciado interno de las celdas */
+            text-align: center; /* Centrar el texto */
+        }
+        /* Estilos para la barra de navegación */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            align-items: center; 
+        }
+        .navbar img {
+            height: 80px; 
+            margin-right: 550px; 
+        }
+        .navbar .nav-links {
+            margin-left: 100px; 
+            display: flex;
+            justify-content: center; 
+        }
+        .navbar a {
+            color: #f2f2f2;
+            display: inline-block; 
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        /* Estilos para el contenedor */
+        .container {
+            width: 80%; /* Ancho del contenedor principal */
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto; /* Añade un scroll vertical */
+            max-height: 750px; /* Altura máxima del contenedor */
+            text-align: center; /* Centrar texto dentro del contenedor */
+        }
+        /* Estilos para la tabla */
+        .container table {
+            margin: 0 auto; /* Centrar la tabla horizontalmente */
+        }
+        /* Estilos para el título */
+        .container h1 {
+            margin-bottom: 20px; /* Espaciado inferior para el título */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="/media/footMon.png" alt="FootMon">
+        <div class="nav-links">
+            <a href="{% url 'pagina_principal' %}" class="active">Inicio</a>
+            <a href="{% url 'datos' %}">Datos</a>
+            <a href="{% url 'consultas' %}">Consultas</a>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Registro de tandas de penalti</h1>
+        <table>
+            {% for row in csv_data %}
+            <tr>
+                {% for item in row %}
+                <td>{{ item }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

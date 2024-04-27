@@ -38,38 +38,21 @@
             color: black;
         }
         .container {
-            max-width: 800px;
+            width: 80%; /* Ancho del contenedor principal */
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center; /* Centrar el texto */
         }
         h1 {
-            text-align: center;
             color: #333;
         }
         p {
             color: #666;
-        }
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .button {
-            margin: 10px;
-            padding: 10px 20px;
-            background-color: #359c54;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #555;
+            margin-bottom: 15px; /* Espacio adicional entre párrafos */
+            line-height: 1.6; /* Altura de línea para mejorar la legibilidad */
         }
     </style>
 </head>
@@ -77,55 +60,20 @@
     <div class="navbar">
         <img src="/media/footMon.png" alt="FootMon">
         <div class="nav-links">
-            <a href="#" class="active">Inicio</a>
-            <a href="#">Datos</a>
-            <a href="#">Consultas</a>
+            <a href="{% url 'pagina_principal' %}" class="active">Inicio</a>
+            <a href="datos">Datos</a>
+            <a href="consultas">Consultas</a>
         </div>
     </div>
 
     <div class="container">
         <h1>FootMon - Estadísticas de Fútbol</h1>
         <p>Bienvenido a FootMon, la aplicación de datos estadísticos de fútbol.</p>
-        <p>Aquí podrás encontrar información detallada sobre equipos, jugadores, partidos y mucho más.</p>
-        <p>¡Explora nuestras estadísticas y disfruta del fascinante mundo del fútbol!</p>
-
-        <div class="button-container">
-
-            <div class="button-container">
-                <a href="partidos_equipo_anyo_torneo" class="button">Partidos jugados por equipo</a>
-            </div>
-
-            <div class="button-container">
-                <a href="goles_por_jugador_y_anyo" class="button">Goles por jugador y año</a>
-            </div>
-
-            <div class="button-container">
-                <a href="media_goles_de_penalti_por_jugador" class="button">Media de goles de penalti de cada jugador por año</a>
-            </div>
-
-            <div class="button-container">
-                <a href="goles_en_propia" class="button">Goles en propia puerta</a>
-            </div>
-
-            <div class="button-container">
-                <a href="maximo_goleador_equipo" class="button">Máximos goleadores</a>
-            </div>
-
-            <button class="button">Top 10 ciudades con resultados más altos</button>
-            
-            <div class="button-container">
-                <a href="goles_por_equipo_en_torneo" class="button">Goles por equipo</a>
-            </div>
-
-            <div class="button-container">
-                <a href="primer_tiro_penaltis" class="button">Primeros chutes en tanda de penalti</a>
-            </div>
-
-            <div class="button-container">
-                <a href="media_victorias_equipo" class="button">Media victorias por equipo</a>
-            </div>
-
-        </div>
+        <p>Esta aplicación forma parte de nuestro trabajo, que tiene como objetivo principal explorar el potencial de las bases de datos NoSQL, como MongoDB, y alguna técnica de procesamiento de datos, como MapReduce, que son herramientas muy útiles para analizar y extraer conocimientos relevantes de conjuntos grandes de datos.</p>
+        <p>Para esto, hemos usado conjunto de datos sobre resultados, registro de goles y mucho más. ¡Explora nuestras estadísticas y resultados!</p>
+    
+        <br></br>
+        <p></p>
     </div>
 </body>
 </html>
