@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My HTML Document</title>
+</head>
+<body>
+    {% for equipo, goleadores in max_goleadores_por_equipo.items %}
+        <p>{{ equipo }} -</p>
+        <ul>
+            {% for goleador in goleadores %}
+                <li>{{ goleador.scorer }}: {{ goleador.goals }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>

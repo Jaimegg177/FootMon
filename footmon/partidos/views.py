@@ -111,7 +111,46 @@ def goles_en_propia_reibidos_por_equipo(request):
 
     return render(request, 'goles_propia.html', {'sorted_result': sorted_result})
 
-# 5 Maximo goleador de cada equipo (aggregation o procesado)
+# 5 Maximos goleadores de cada equipo (aggregation o procesado)
+def maximo_goleador_equipo(request):
+    # Función de map
+    map_function = """
+    function() {
+        emit({team: this.team, scorer: this.scorer}, 1);
+    }
+    """
+
+    # Función de reduce
+    reduce_function = """
+    function(key, values) {
+        return Array.sum(values);
+    }
+    """
+
+    # Ejecutar MapReduce
+    resultado = db.command('mapReduce', 'partidos_goleadores', map=map_function, reduce=reduce_function, out='maximo_goleador_equipo')
+
+    # Obtener los resultados ordenados por el número de goles en orden descendente
+    sorted_result = list(db.maximo_goleador_equipo.find().sort([('value', -1)]).limit(1200))
+
+    # Crear un diccionario para almacenar los máximos goleadores de cada equipo
+    max_goleadores_por_equipo = {}
+
+    # Iterar sobre los resultados y almacenar solo los tres máximos goleadores de cada equipo
+    for result in sorted_result:
+        equipo = result['_id']['team']
+        goleador = result['_id']['scorer']
+        goles = result['value']
+        
+        if equipo not in max_goleadores_por_equipo:
+            max_goleadores_por_equipo[equipo] = []
+
+        if len(max_goleadores_por_equipo[equipo]) < 3:
+            max_goleadores_por_equipo[equipo].append({'scorer': goleador, 'goals': goles})
+
+        print(max_goleadores_por_equipo)
+
+    return render(request, 'maximo_goleador_equipo.html', {'max_goleadores_por_equipo': max_goleadores_por_equipo})
 
 # 6 Top 10 ciudades con resultados más altos (procesando)
 
