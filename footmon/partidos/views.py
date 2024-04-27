@@ -33,7 +33,42 @@ def partidos_equipo_anyo_torneo(request):
 
 # 2 Goles marcadados por cada jugador en cada año
 
-# 3 Media de goles de cada jugador por partido en cada año (porcentaje de goles por partido)
+
+# 3 Media de goles de penalti de cada jugador.
+
+def media_goles_de_penalti_por_jugador(request):
+    # Función de map
+    map_function = """
+    function() {
+        emit({scorer: this.scorer}, this.penalty);
+    }
+    """
+
+    # Función de reduce
+    reduce_function = """
+    function(key, values) {
+        penalty = 0;
+        for (var i = 0; i < values.length; i++) {
+            if(values[i] == true) {
+                penalty += 1;
+            }
+        }
+        return {goles: values.length, penaltis: penalty};
+    }
+    """
+    finalize_function="""
+    function (key, value) {
+        value.avg = value.penaltis/value.goles *100;
+        return value;
+    }
+    """
+
+    resultado = db.command('mapReduce', 'partidos_goleadores', map=map_function, reduce=reduce_function,finalize=finalize_function, out='goles_de_penalti_por_jugador')
+
+    sorted_result = list(db.goles_de_penalti_por_jugador.find().sort([('value', -1)]))
+
+    return render(request, 'media_goles_de_penalti_por_jugador.html', {'sorted_result': sorted_result})
+    
 
 # 4 Goles en propia recibidos por cada equipo 
 def goles_en_propia_reibidos_por_equipo(request):
@@ -91,6 +126,7 @@ def goles_por_equipo_en_torneo(request):
 
 # 8 Cuántas veces cada equipo ha chutado primero en una tanda de penaltis
 def primer_tiro_penaltis(request):
+
     map_function = """
     function() {
         emit({team: this.first_shooter}, 1);
@@ -109,3 +145,40 @@ def primer_tiro_penaltis(request):
     sorted_result = list(db.chutes_primero_en_penaltis.find().sort([('value', -1)]))
 
     return render(request, 'primer_tiro_penaltis.html', {'sorted_result': sorted_result})
+
+
+# 9 Promedio de partidos ganados por equipo
+
+def media_victorias_equipo(request):
+    # Función de map
+    map_function = """
+    function() {
+        emit({team: this.home_team}, {jugados: 1, ganados: this.home_score > this.away_score ? 1 : 0});
+        emit({team: this.away_team}, {jugados: 1, ganados: this.home_score < this.away_score ? 1 : 0});
+    }
+    """
+
+    # Función de reduce
+    reduce_function = """
+    function(key, values) {
+        var total_matches = 0;
+        var total_wins = 0;
+        for (var i = 0; i < values.length; i++) {
+            total_matches += values[i].jugados;
+            total_wins += values[i].ganados;
+        }
+        return {jugados: total_matches, ganados: total_wins};
+    }
+    """
+    finalize_function="""
+    function (key, value) {
+        value.media_victorias = value.ganados/value.jugados * 100;
+        return value;
+    }
+    """
+
+    resultado = db.command('mapReduce', 'partidos_partido', map=map_function, reduce=reduce_function,finalize=finalize_function, out='porcentaje_partidos_ganados_por_equipo')
+
+    sorted_result = list(db.porcentaje_partidos_ganados_por_equipo.find().sort([('value.percentage_wins', -1)]))
+
+    return render(request, 'media_victorias_equipo.html', {'sorted_result': sorted_result})
