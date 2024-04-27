@@ -47,12 +47,12 @@ def goles_por_jugador_y_anyo(request):
     # Función de reduce
     reduce_function = """
     function(key, values) {
-        return Array.sum(values);
+        return {goals: Array.sum(values), scorer: key.scorer, year: key.year};
     }
     """
     resultado = db.command('mapReduce', 'partidos_goleadores', map=map_function, reduce=reduce_function, out='goles_por_jugador_y_anyo')
 
-    sorted_result = list(db.goles_por_jugador_y_anyo.find().sort([('year', -1)]))
+    sorted_result = list(db.goles_por_jugador_y_anyo.find().sort([('value.scorer', -1)]))
 
     return render(request, 'goles_por_jugador_y_anyo.html', {'sorted_result': sorted_result})
 
@@ -79,6 +79,7 @@ def media_goles_de_penalti_por_jugador(request):
     """
     finalize_function="""
     function (key, value) {
+        value.key = key;
         value.avg = value.penaltis/value.goles *100;
         return value;
     }
@@ -104,7 +105,7 @@ def goles_en_propia_reibidos_por_equipo(request):
     # Función de reduce
     reduce_function = """
     function(key, values) {
-        return Array.sum(values);
+        return {goals:Array.sum(values), team: key.team};
     }
     """
 
@@ -207,7 +208,7 @@ def ciudades_con_mas_goles(request):
     # Función de reduce
     reduce_function = """
     function(key, values) {
-        return Array.sum(values);
+        return {value: Array.sum(values), city: key};
     }
     """
 
@@ -253,7 +254,7 @@ def goles_por_equipo_en_torneo(request):
     # Función de reduce
     reduce_function = """
     function(key, values) {
-        return Array.sum(values);
+        return {goals:Array.sum(values), team: key.team, tournament: key.tournament};
     }
     """
 
@@ -276,7 +277,7 @@ def primer_tiro_penaltis(request):
     # Función de reduce para calcular número de veces que cada equipo ha chutado primero en tanda de penaltis
     reduce_function = """
     function(key, values) {
-        return Array.sum(values);
+        return {times: Array.sum(values), team: key.team};
     }
     """
 
@@ -310,6 +311,7 @@ def media_victorias_equipo(request):
     """
     finalize_function="""
     function (key, value) {
+        value.team = key.team;
         value.media_victorias = value.ganados/value.jugados * 100;
         return value;
     }
@@ -317,7 +319,7 @@ def media_victorias_equipo(request):
 
     resultado = db.command('mapReduce', 'partidos_partido', map=map_function, reduce=reduce_function,finalize=finalize_function, out='porcentaje_partidos_ganados_por_equipo')
 
-    sorted_result = list(db.porcentaje_partidos_ganados_por_equipo.find().sort([('value.percentage_wins', -1)]))
+    sorted_result = list(db.porcentaje_partidos_ganados_por_equipo.find().sort([('value.media_victorias', -1)]))
 
     return render(request, 'media_victorias_equipo.html', {'sorted_result': sorted_result})
 

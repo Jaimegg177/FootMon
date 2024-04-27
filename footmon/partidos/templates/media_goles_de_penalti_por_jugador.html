@@ -94,13 +94,20 @@
         <table>
             <thead>
                 <tr>
-                    <th>Element</th>
+                    <th>Jugador</th>
+                    <th>Goles</th>
+                    <th>Penaltis</th>
+                    <th>Media</th>
+
                 </tr>
             </thead>
             <tbody>
                 {% for element in sorted_result %}
                 <tr>
-                    <td>{{ element }}</td>
+                    <td>{{ element.value.key.scorer }}</td>
+                    <td>{{ element.value.goles }}</td>
+                    <td>{{ element.value.penaltis }}</td>
+                    <td>{{ element.value.avg }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
