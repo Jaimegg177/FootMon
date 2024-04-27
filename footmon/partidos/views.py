@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from pymongo import MongoClient
+from .models import Partido
 
 # Create your views here.
 
@@ -152,9 +153,90 @@ def maximo_goleador_equipo(request):
 
     return render(request, 'maximo_goleador_equipo.html', {'max_goleadores_por_equipo': max_goleadores_por_equipo})
 
+def maximo_goleador_equipo_aggregate(request):
+    pipeline = [
+        {
+            "$group": {
+                "_id": {"team": "$team", "scorer": "$scorer"},
+                "goals": {"$sum": 1}
+            }
+        },
+        {
+            "$sort": {"goals": -1, "_id.team": 1}
+        },
+        {
+            "$group": {
+                "_id": "$_id.team",
+                "max_scorers": {
+                    "$push": {
+                        "scorer": "$_id.scorer",
+                        "goals": "$goals"
+                    }
+                }
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "team": "$_id",
+                "max_scorers": {"$slice": ["$max_scorers", 3]}
+            }
+        },
+        {
+            "$sort": {"max_scorers.goals": -1}
+        }
+    ]
+
+
+    max_goleadores_por_equipo = list(db.partidos_goleadores.aggregate(pipeline))
+
+    return render(request, 'maximo_goleador_equipo_aggregate.html', {'max_goleadores_por_equipo': max_goleadores_por_equipo})
+
 # 6 Top 10 ciudades con resultados más altos (procesando)
 
+def ciudades_con_mas_goles(request):
+    # Función de map
+    map_function = """
+    function() {
+        emit(this.city, this.home_score + this.away_score);
+    }
+    """
+
+    # Función de reduce
+    reduce_function = """
+    function(key, values) {
+        return Array.sum(values);
+    }
+    """
+
+    # Ejecutar MapReduce
+    resultado = db.command('mapReduce', 'partidos_partido', map=map_function, reduce=reduce_function, out='ciudades_con_mas_goles')
+
+    # Obtener los resultados ordenados por la suma de goles en orden descendente y limitar a 10 resultados
+    sorted_result = list(db.ciudades_con_mas_goles.find().sort([('value', -1)]).limit(10))
+
+    return render(request, 'ciudades_con_mas_goles.html', {'sorted_result': sorted_result})
 # 6 Top 10 ciudades con resultados más altos (bucles)
+def ciudades_con_mas_goles_bucles(request):
+    # Obtener todos los partidos de la base de datos
+    partidos = Partido.objects.all()
+
+    # Diccionario para almacenar la suma de goles por ciudad
+    goles_por_ciudad = {}
+
+    # Calcular la suma de goles por ciudad
+    for partido in partidos:
+        ciudad = partido.city
+        goles_totales = partido.home_score + partido.away_score
+        if ciudad in goles_por_ciudad:
+            goles_por_ciudad[ciudad] += goles_totales
+        else:
+            goles_por_ciudad[ciudad] = goles_totales
+
+    # Ordenar el diccionario por la suma de goles en orden descendente
+    sorted_result = sorted(goles_por_ciudad.items(), key=lambda x: x[1], reverse=True)[:10]
+
+    return render(request, 'ciudades_con_mas_goles_bucles.html', {'sorted_result': sorted_result})
 
 # 7 Número de goles metidos por cada equipo en cada torneo
 def goles_por_equipo_en_torneo(request):
