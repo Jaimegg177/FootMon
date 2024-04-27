@@ -190,7 +190,6 @@ def maximo_goleador_equipo_aggregate(request):
         }
     ]
 
-
     max_goleadores_por_equipo = list(db.partidos_goleadores.aggregate(pipeline))
 
     return render(request, 'maximo_goleador_equipo_aggregate.html', {'max_goleadores_por_equipo': max_goleadores_por_equipo})
