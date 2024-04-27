@@ -32,6 +32,26 @@ def partidos_equipo_anyo_torneo(request):
     return render(request, 'partidos_equipo_anyo_torneo.html', {'sorted_result': sorted_result})
 
 # 2 Goles marcadados por cada jugador en cada año
+def goles_por_jugador_y_anyo(request):
+    # Función de map
+    map_function = """
+    function() {
+        var year = this.date.split('-')[0];
+        emit({year: year, scorer: this.scorer}, 1);
+    }
+    """
+
+    # Función de reduce
+    reduce_function = """
+    function(key, values) {
+        return Array.sum(values);
+    }
+    """
+    resultado = db.command('mapReduce', 'partidos_goleadores', map=map_function, reduce=reduce_function, out='goles_por_jugador_y_anyo')
+
+    sorted_result = list(db.goles_por_jugador_y_anyo.find().sort([('year', -1)]))
+
+    return render(request, 'goles_por_jugador_y_anyo.html', {'sorted_result': sorted_result})
 
 # 3 Media de goles de penalti de cada jugador.
 def media_goles_de_penalti_por_jugador(request):
