@@ -33,7 +33,7 @@ def partidos_equipo_anyo_torneo(request):
 
 # 2 Goles marcadados por cada jugador en cada año
 
-# 3 Media de goles de cada jugador por partido en cada año (porcentaje de goles por partido)
+# 3 Media de goles de penalti de cada jugador por partido en cada año (porcentaje de goles por partido)
 
 # 4 Goles en propia recibidos por cada equipo 
 def goles_en_propia_reibidos_por_equipo(request):
@@ -109,3 +109,9 @@ def primer_tiro_penaltis(request):
     sorted_result = list(db.chutes_primero_en_penaltis.find().sort([('value', -1)]))
 
     return render(request, 'primer_tiro_penaltis.html', {'sorted_result': sorted_result})
+
+
+# MAIN
+
+def pagina_principal(request):
+    return render(request, 'main.html', {})

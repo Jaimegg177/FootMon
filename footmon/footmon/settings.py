@@ -3,7 +3,15 @@
 from pathlib import Path
 import pymongo
 
+import os
+from pathlib import Path
+
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SECRET_KEY = 'django-insecure-dwr^#hx@yt97f+wx!#&29kc0%hin+d#gm%@+f8f*9p+*&gly0w'
 
