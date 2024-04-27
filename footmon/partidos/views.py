@@ -6,6 +6,7 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['deportes_db']
 
+# 1 Partidos jugados por cada equipo en cada año en una competición dada
 def partidos_equipo_anyo_torneo(request):
     # Función de map
     map_function = """
@@ -30,7 +31,11 @@ def partidos_equipo_anyo_torneo(request):
 
     return render(request, 'partidos_equipo_anyo_torneo.html', {'sorted_result': sorted_result})
 
+# 2 Goles marcadados por cada jugador en cada año
 
+# 3 Media de goles de cada jugador por partido en cada año (porcentaje de goles por partido)
+
+# 4 Goles en propia recibidos por cada equipo 
 def goles_en_propia_reibidos_por_equipo(request):
     # Función de map
     map_function = """
@@ -54,6 +59,13 @@ def goles_en_propia_reibidos_por_equipo(request):
 
     return render(request, 'goles_propia.html', {'sorted_result': sorted_result})
 
+# 5 Maximo goleador de cada equipo (aggregation o procesado)
+
+# 6 Top 10 ciudades con resultados más altos (procesando)
+
+# 6 Top 10 ciudades con resultados más altos (bucles)
+
+# 7 Número de goles metidos por cada equipo en cada torneo
 def goles_por_equipo_en_torneo(request):
      # Función de map
     map_function = """
@@ -77,7 +89,7 @@ def goles_por_equipo_en_torneo(request):
 
     return render(request, 'goles_por_equipo_en_torneo.html', {'sorted_result': sorted_result})
 
-
+# 8 Cuántas veces cada equipo ha chutado primero en una tanda de penaltis
 def primer_tiro_penaltis(request):
     map_function = """
     function() {
