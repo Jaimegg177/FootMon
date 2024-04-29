@@ -90,12 +90,12 @@
     </div>
 
     <div class="container">
-        <h2>Resultados</h2>
+        <h2>Partidos jugados por cada equipo en cada competición</h2>
         <form method="post">
             {% csrf_token %}
             <label for="tournament">Selecciona un torneo:</label>
             <select name="tournament" id="tournament">
-                <option value="">Todos los torneos</option>
+                <option value="">---</option>
                 {% for torneo in torneos %}
                 <option value="{{ torneo }}" {% if torneo == selected_tournament %}selected{% endif %}>{{ torneo }}</option>
                 {% endfor %}
