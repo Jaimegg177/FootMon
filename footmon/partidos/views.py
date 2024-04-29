@@ -15,7 +15,6 @@ def partidos_equipo_anyo_torneo(request):
     torneos = db.partidos_partido.distinct("tournament")
     if request.method == 'POST':
         selected_tournament = str(request.POST.get("tournament"))
-        print("selected_tournament: ", selected_tournament)
         # Función de map
         map_function = f"""
         function() {{
@@ -26,7 +25,6 @@ def partidos_equipo_anyo_torneo(request):
             }}
         }}
         """
-        print(map_function)
         # Función de reduce
         reduce_function = """
         function(key, values) {
@@ -36,7 +34,6 @@ def partidos_equipo_anyo_torneo(request):
         resultado = db.command('mapReduce', 'partidos_partido', map=map_function, reduce=reduce_function, out='partidos_por_equipo_por_año_en_torneo')
 
         sorted_result = list(db.partidos_por_equipo_por_año_en_torneo.find().sort([('year', -1)]))
-        print("sorted_result: ", sorted_result)
         return render(request, 'partidos_equipo_anyo_torneo.html', {'sorted_result': sorted_result, 'torneos': torneos, 'selected_tournament': selected_tournament})
 
     return render(request, 'partidos_equipo_anyo_torneo.html', {'torneos': torneos})
@@ -159,7 +156,6 @@ def maximo_goleador_equipo(request):
         if len(max_goleadores_por_equipo[equipo]) < 3:
             max_goleadores_por_equipo[equipo].append({'scorer': goleador, 'goals': goles})
 
-        print(max_goleadores_por_equipo)
 
     return render(request, 'maximo_goleador_equipo.html', {'max_goleadores_por_equipo': max_goleadores_por_equipo})
 
