@@ -40,6 +40,9 @@ def populate_db():
     print("Datos insertados en la base de datos")
 
     # Ejecutar migraciones de Django
+    call_command('makemigrations')
+    print("Migraciones hechas")
+
     call_command('migrate')
     print("Migraciones completadas")
 

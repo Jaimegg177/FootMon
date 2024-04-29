@@ -11,28 +11,35 @@ db = client['deportes_db']
 
 # 1 Partidos jugados por cada equipo en cada año en una competición dada
 def partidos_equipo_anyo_torneo(request):
-    # Función de map
-    map_function = """
-    function() {
-        if (this.tournament == 'FIFA World Cup') {
-            var year = this.date.split('-')[0];
-            emit({year: year, tournament: this.tournament, team: this.home_team}, 1);
-            emit({year: year, tournament: this.tournament, team: this.away_team}, 1);
+
+    torneos = db.partidos_partido.distinct("tournament")
+    if request.method == 'POST':
+        selected_tournament = str(request.POST.get("tournament"))
+        print("selected_tournament: ", selected_tournament)
+        # Función de map
+        map_function = f"""
+        function() {{
+            if (this.tournament == '{selected_tournament}') {{
+                var year = this.date.split('-')[0];
+                emit({{year: year, tournament: this.tournament, team: this.home_team}}, 1);
+                emit({{year: year, tournament: this.tournament, team: this.away_team}}, 1);
+            }}
+        }}
+        """
+        print(map_function)
+        # Función de reduce
+        reduce_function = """
+        function(key, values) {
+            return {matches: Array.sum(values), tournament: key.tournament, team: key.team, year: key.year};
         }
-    }
-    """
+        """
+        resultado = db.command('mapReduce', 'partidos_partido', map=map_function, reduce=reduce_function, out='partidos_por_equipo_por_año_en_torneo')
 
-    # Función de reduce
-    reduce_function = """
-    function(key, values) {
-        return Array.sum(values);
-    }
-    """
-    resultado = db.command('mapReduce', 'partidos_partido', map=map_function, reduce=reduce_function, out='partidos_por_equipo_por_año_en_torneo')
+        sorted_result = list(db.partidos_por_equipo_por_año_en_torneo.find().sort([('year', -1)]))
+        print("sorted_result: ", sorted_result)
+        return render(request, 'partidos_equipo_anyo_torneo.html', {'sorted_result': sorted_result, 'torneos': torneos, 'selected_tournament': selected_tournament})
 
-    sorted_result = list(db.partidos_por_equipo_por_año_en_torneo.find().sort([('year', -1)]))
-
-    return render(request, 'partidos_equipo_anyo_torneo.html', {'sorted_result': sorted_result})
+    return render(request, 'partidos_equipo_anyo_torneo.html', {'torneos': torneos})
 
 # 2 Goles marcadados por cada jugador en cada año
 def goles_por_jugador_y_anyo(request):

@@ -91,16 +91,33 @@
 
     <div class="container">
         <h2>Resultados</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="tournament">Selecciona un torneo:</label>
+            <select name="tournament" id="tournament">
+                <option value="">Todos los torneos</option>
+                {% for torneo in torneos %}
+                <option value="{{ torneo }}" {% if torneo == selected_tournament %}selected{% endif %}>{{ torneo }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filtrar</button>
+        </form>
         <table>
             <thead>
                 <tr>
-                    <th>Element</th>
+                    <th>Torneo</th>
+                    <th>Año</th>
+                    <th>Equipo</th>
+                    <th>Partidos</th>
                 </tr>
             </thead>
             <tbody>
                 {% for element in sorted_result %}
                 <tr>
-                    <td>{{ element }}</td>
+                    <td>{{ element.value.tournament }}</td>
+                    <td>{{ element.value.year }}</td>
+                    <td>{{ element.value.team }}</td>
+                    <td>{{ element.value.matches }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
