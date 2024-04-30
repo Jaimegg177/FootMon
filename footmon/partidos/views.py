@@ -139,7 +139,7 @@ def maximo_goleador_equipo(request):
     resultado = db.command('mapReduce', 'partidos_goleadores', map=map_function, reduce=reduce_function, out='maximo_goleador_equipo')
 
     # Obtener los resultados ordenados por el número de goles en orden descendente
-    sorted_result = list(db.maximo_goleador_equipo.find().sort([('value', -1)]).limit(1200))
+    sorted_result = list(db.maximo_goleador_equipo.find().sort([('value', -1)]))
 
     # Crear un diccionario para almacenar los máximos goleadores de cada equipo
     max_goleadores_por_equipo = {}
